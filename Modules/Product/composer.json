@@ -1,0 +1,35 @@
+{
+    "name": "nwidart/product",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Product\\": "modules/product/src",
+            "Modules\\Product\\App\\":"modules/product/app",
+            "Modules\\Product\\App\\Services": "modules/product/app/Services",
+            "Modules\\Product\\App\\Repositories": "modules/product/app/Repositories",
+            "Modules\\Product\\App\\Interfaces": "modules/product/app/Interfaces",
+            "Modules\\Product\\App\\Requests": "modules/product/app/Requests",
+            "Modules\\Product\\Database\\Factories\\": "modules/product/database/factories",
+            "Modules\\Product\\Database\\Seeders\\": "modules/product/database/seeders"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Product\\Tests\\": "tests/"
+        }
+    }
+}

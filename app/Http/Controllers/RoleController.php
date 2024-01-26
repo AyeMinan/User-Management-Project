@@ -13,37 +13,39 @@ use Illuminate\Support\Facades\Gate;
 class RoleController extends Controller
 {
     public function show(){
-        $this->authorize('show', Role::class);
         return view("main.role", [
             'roles' => Role::all()
         ]);
     }
 
     public function create(){
-        $this->authorize('create', Role::class);
         $featureUser = Feature::where('name', 'user')->first();
         $featureRole = Feature::where('name', 'role')->first();
+        $featureProduct = Feature::where('name', 'product')->first();
 
         $userPermission = Permission::where('feature_id', $featureUser->id)->get();
         $rolePermission = Permission::where('feature_id', $featureRole->id)->get();
+        $productPermission = Permission::where('feature_id', $featureProduct->id)->get();
         return view("role.create", [
             'feature' => [
                 'user' => $featureUser,
-                'role' => $featureRole
+                'role' => $featureRole,
+                'product' => $featureProduct
             ],
             "permissions" => [
                 'userPermission' => $userPermission,
-                'rolePermission' => $rolePermission
-            ]
+                'rolePermission' => $rolePermission,
+                'productPermission' => $productPermission
+            ],
+
         ]);
     }
 
     public function store(Request $request)
     {
-        $this->authorize('store', Role::class);
         $request->validate([
             'roleName' => 'required|string|max:255',
-            'permissions' => 'required|array',
+            'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,name',
         ]);
 
@@ -53,8 +55,11 @@ class RoleController extends Controller
         ]);
 
 
-        $permissions = Permission::whereIn('name', $request->input('permissions'))->get();
-        $role->permissions()->attach($permissions);
+        if ($request->has('permissions')) {
+            $selectedPermissions = $request->input('permissions');
+            $permissions = Permission::whereIn('name', $selectedPermissions)->get();
+            $role->permissions()->attach($permissions);
+        }
 
 
 
@@ -62,7 +67,8 @@ class RoleController extends Controller
     }
 
     public function delete(Role $role){
-        $this->authorize('delete', $role);
+
+
         $users = User::where('role_id', $role->id)->get();
 
 
@@ -77,51 +83,57 @@ class RoleController extends Controller
     }
 
     public function edit(Role $role){
-        $this->authorize('edit', $role);
 
-        $permissionName = $role->permissions()->first()->name;
         $featureUser = Feature::where('name', 'user')->first();
         $featureRole = Feature::where('name', 'role')->first();
+        $featureProduct = Feature::where('name', 'product')->first();
         $userPermission = Permission::where('feature_id', $featureUser->id)->get();
         $rolePermission = Permission::where('feature_id', $featureRole->id)->get();
+        $productPermission = Permission::where('feature_id', $featureProduct->id)->get();
         return view('role.edit', [
             'role' => $role->where('id', $role->id)->first(),
             'feature' => [
                 'user' => $featureUser,
-                'role' => $featureRole
+                'role' => $featureRole,
+                'product' => $featureProduct
             ],
             "permissions" => [
                 'userPermission' => $userPermission,
-                'rolePermission' => $rolePermission
-            ],
-            'permissionName' => $permissionName
+                'rolePermission' => $rolePermission,
+                'productPermission' => $productPermission
+            ]
         ]);
 
     }
 
-    public function update(Role $role, Request $request){
-        $this->authorize('update', $role);
-         $request->validate([
+    public function update(Role $role, Request $request)
+    {
+        $request->validate([
             'roleName' => 'required|string|max:255',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,name', // Assuming you have a "permissions" table
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,name',
         ]);
 
-
         try {
-
             $role->update([
                 'name' => $request->input('roleName'),
             ]);
 
-            $permissions = Permission::whereIn('name', $request->input('permissions'))->pluck('id');
-            $role->permissions()->sync($permissions);
+            $permissions = $request->input('permissions');
+
+            if (!is_null($permissions)) {
+                $permissions = Permission::whereIn('name', $permissions)->pluck('id');
+                $role->permissions()->sync($permissions);
+            } else {
+                // If no permissions are selected, detach all existing permissions
+                $role->permissions()->detach();
+            }
 
             return redirect('/role')->with('success', 'Role updated successfully.');
         } catch (\Exception $e) {
-
             return redirect('/role')->with('error', 'An error occurred while updating the role.');
         }
     }
+
 
 }

@@ -19,10 +19,10 @@
     </div>
     <div class="form-group my-2">
         <select class="form-select" id="selectedRole" name="role_id" aria-label="Default select example">
-            <option selected>Select Role</option>
+            <option selected>Select a Role</option>
 
             @foreach ($roles as $role)
-            <option value="{{ $role->id }}">{{$role->name}}</option>
+            <option value="{{ $role->id }}" @if($user->role_id == $role->id) selected @endif>{{$role->name}}</option>
             @endforeach
 
 

@@ -77,5 +77,10 @@ class Kernel extends HttpKernel
         'checkUserCreatePermission' => \App\Http\Middleware\CheckUserCreatePermission::class,
         'checkUserUpdatePermission' => \App\Http\Middleware\CheckUserUpdatePermission::class,
         'checkUserDeletePermission' => \App\Http\Middleware\CheckUserDeletePermission::class,
+
+        'checkProductViewPermission' => \App\Http\Middleware\CheckProductViewPermission::class,
+        'checkProductCreatePermission' => \App\Http\Middleware\CheckProductCreatePermission::class,
+        'checkProductUpdatePermission' => \App\Http\Middleware\CheckProductUpdatePermission::class,
+        'checkProductDeletePermission' => \App\Http\Middleware\CheckProductDeletePermission::class,
     ];
 }

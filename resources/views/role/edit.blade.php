@@ -7,6 +7,9 @@
           <label for="Role Name" class="form-label">Role Name</label>
           <input type="text" name="roleName" value="{{$role->name}}" class="form-control" >
         </div>
+        @error('roleName')
+        <div class="text-danger">{{$message}}</div>
+        @enderror
         <h5>Role Permissions</h5>
         <div class="checkbox-container" style="display: flex;">
             <label for="User" class="form-label" id="userLabel">{{$feature['user']->name}}</label>
@@ -32,6 +35,19 @@
             </label>
 
 
+    </div>
+        @endforeach
+
+        </div>
+
+        <div class="checkbox-container" style="display: flex;">
+            <label for="Role" class="form-label" id="roleLabel">{{$feature['product']->name}}</label>
+            @foreach ($permissions['productPermission'] as $productPermission)
+        <div class="form-check mx-3">
+        <input class="form-check-input" type="checkbox" value="{{ $productPermission->name }}" name="permissions[]" id="productPermission_{{ $productPermission->id }}" {{ in_array($productPermission->name, $role->permissions->pluck('name')->toArray()) ? 'checked' : '' }}>
+        <label class="form-check-label" for="productPermission_{{ $productPermission->id }}">
+            {{ $productPermission->name }}
+        </label>
     </div>
         @endforeach
 

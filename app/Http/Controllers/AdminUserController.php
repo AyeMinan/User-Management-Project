@@ -11,20 +11,17 @@ class AdminUserController extends Controller
 {
 
     public function index(){
-        $this->authorize('index', User::class);
         return view("main.index", [
             'users' => User::all()
         ]);
     }
     public function create(){
-        $this->authorize('create', User::class);
         return view("user.create", [
             'roles' => Role::all()
         ]);
     }
 
     public function store(){
-        $this->authorize('store', User::class);
         $cleanData = (request()->validate([
             'name' => ['required', 'max:20'],
             'email' => ['required', 'max:20'],
@@ -48,33 +45,31 @@ class AdminUserController extends Controller
 
 
     public function delete(User $user){
-        $this->authorize('delete', $user);
+
         $user->delete();
 
         return redirect()->back()->with('message', 'User has been deleted');
     }
     public function edit(User $user){
-        $this->authorize('edit', $user);
         return view('user.edit', [
-            'user' => User::where('id', $user->id)->first(),
-            'roles' => Role::all()
+            'user' => $user,
+            'roles' => Role::all(),
         ]);
     }
 
     public function update(User $user, Request $request)
 {
-    $this->authorize('update', $user);
-    // Validate the incoming request data
+
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
         'role_id' => 'required|exists:roles,id',
         'username' => 'required|string|max:255',
-        'password' => 'nullable|string|min:8|max:255', // Add any additional validation rules for the password
+        'password' => 'nullable|string|min:8|max:255',
     ]);
 
     try {
-        // Update the user
+
         $user->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),

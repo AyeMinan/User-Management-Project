@@ -9,32 +9,32 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{{route("main.index")}}">User</a>
-              </li>
+              @can('userViewPermission')
+                <li class="nav-item">
+                <a class="nav-link" href="{{ route('main.index') }}">User</a>
+                </li>
+            @endcan
+            @can('roleViewPermission')
               <li class="nav-item">
                 <a class="nav-link" href="{{route("main.show")}}">Role</a>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+              @endcan
+              @can('productViewPermission')
+              <li class="nav-item">
+                <a class="nav-link" href="/product">Product</a>
               </li>
+              @endcan
               <li class="nav-item">
                 <a class="nav-link disabled" aria-disabled="true">Disabled</a>
               </li>
             </ul>
             @if (auth()->check())
+            <a style="margin-right: 12px" class="nav-link" href="{{route("main.index")}}">{{auth()->user()->name}}</a>
             <form action="/logout" method="POST">
                 @csrf
-           <a class="nav-item"><button class="btn btn-danger" type="submit">Logout </button></a>
+           <a  class="nav-item"><button class="btn btn-danger" type="submit" style="margin-bottom: 12px">Logout</button></a>
             </form>
+
             @else
             <a  class="nav-link" href="/login">Login</a>
             <a style="padding-right: 20px; padding-left: 20px;"class="nav-link" href="{{route("register.create")}}">Register</a>

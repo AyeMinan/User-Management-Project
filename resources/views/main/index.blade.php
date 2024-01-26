@@ -12,7 +12,9 @@
 @endif
     <div style="padding: 20px  20px; max-width: 1200px; margin: 0 auto; border: solid black 1px;">
     <table class="table">
+        @can('userCreatePermission')
         <a href="{{route("user.create")}}"> <button class="btn btn-primary">Create User</button> </a>
+        @endcan
         <thead>
           <tr>
             <th scope="col">Id</th>
@@ -31,15 +33,23 @@
                 <td>{{$user->username}}</td>
                 <td>{{$user->email}}</td>
                 <td>{{$user->role->name}}</td>
+                @if($user->role->name == "Administrator")
+                <td></td>
+                @else
+                @can('userUpdatePermission')
                 <td><a href="{{route('user.edit', [$user->id])}}" >
-                    <button class="btn btn-primary">Edit</button>
+                    <button class="btn btn-primary"
+                   >Edit</button>
                 </a></td>
-
+                @endcan
+                @can('userDeletePermission')
                     <form action="{{route('user.delete', [$user->id])}}" method="post">
                         @method('delete')
                         @csrf
                     <td><button class="btn btn-danger" type="submit">Delete</button></td>
                     </form>
+                    @endcan
+                    @endif
 
 
               </tr>

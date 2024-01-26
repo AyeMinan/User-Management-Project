@@ -12,7 +12,10 @@
         </div>
     @endif
     <table class="table">
-       <a href="{{route("role.create")}}"> <button class="btn btn-primary">Create Role</button> </a>
+        @can('roleCreatePermission')
+
+        <a href="{{route("role.create")}}"> <button class="btn btn-primary">Create Role</button> </a>
+        @endcan
 
         <thead>
           <tr>
@@ -26,14 +29,22 @@
           <tr>
             <th scope="row">1</th>
             <td>{{$role->name}}</td>
+            @if($role->name == "Administrator")
+            <td></td>
+            @else
+            @can('roleUpdatePermission')
             <td><a href="{{route('role.edit', [$role->id])}}">
                 <button class="btn btn-primary">Edit</button>
-                </a></td>
-                <form action="{{route('role.delete', [$role->id])}}" method="POST">
-                    @csrf
-                    @method('delete')
-           <td><button class="btn btn-danger">Delete</button></td>
-                </form>
+            </a></td>
+            @endcan
+            @can('roleDeletePermission')
+            <form action="{{route('role.delete', [$role->id])}}" method="POST">
+                @csrf
+                @method('delete')
+                <td><button class="btn btn-danger">Delete</button></td>
+            </form>
+            @endcan
+                @endif
 
         </tr>
           @endforeach

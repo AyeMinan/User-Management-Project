@@ -171,6 +171,65 @@ class User extends Authenticatable
         return $matchingPermissionsCount === count($permissions);
     }
 
+    public function hasProductViewPermission()
+    {
+        return $this->hasProductViewPermissions('product', ['view']);
+    }
+
+    public function hasProductViewPermissions($feature, $permissions)
+    {
+        $matchingPermissionsCount = $this->role->permissions
+            ->whereIn('feature_id', Feature::where('name', $feature)->pluck('id'))
+            ->whereIn('name', $permissions)
+            ->count();
+
+        return $matchingPermissionsCount === count($permissions);
+    }
+
+    public function hasProductCreatePermission()
+    {
+        return $this->hasProductCreatePermissions('product', ['create']);
+    }
+
+    public function hasProductCreatePermissions($feature, $permissions)
+    {
+        $matchingPermissionsCount = $this->role->permissions
+            ->whereIn('feature_id', Feature::where('name', $feature)->pluck('id'))
+            ->whereIn('name', $permissions)
+            ->count();
+
+        return $matchingPermissionsCount === count($permissions);
+    }
+
+    public function hasProductUpdatePermission()
+    {
+        return $this->hasProductUpdatePermissions('product', ['update']);
+    }
+
+    public function hasProductUpdatePermissions($feature, $permissions)
+    {
+        $matchingPermissionsCount = $this->role->permissions
+            ->whereIn('feature_id', Feature::where('name', $feature)->pluck('id'))
+            ->whereIn('name', $permissions)
+            ->count();
+
+        return $matchingPermissionsCount === count($permissions);
+    }
+
+    public function hasProductDeletePermission()
+    {
+        return $this->hasProductDeletePermissions('product', ['delete']);
+    }
+
+    public function hasProductDeletePermissions($feature, $permissions)
+    {
+        $matchingPermissionsCount = $this->role->permissions
+            ->whereIn('feature_id', Feature::where('name', $feature)->pluck('id'))
+            ->whereIn('name', $permissions)
+            ->count();
+
+        return $matchingPermissionsCount === count($permissions);
+    }
 
 
 
